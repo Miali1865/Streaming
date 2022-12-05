@@ -3,32 +3,53 @@ package serveur;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.awt.image.BufferedImage;
+import java.lang.*;
+import javax.imageio.ImageIO;
 
 public class Serveur {
 
-    public void getServeur() throws IOException {
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
-        Socket socket = null;
-        ServerSocket serverSocket = new ServerSocket(9000);
-        socket = serverSocket.accept();
+  private static DataOutputStream dataOutputStream = null;
+  private static DataInputStream dataInputStream = null;
+  private static Socket s=null;
 
-        File FILE_TO_SEND = new File("C:\\Users\\miali\\Music\\Sariaka\\ckay.mp3");
-        byte[] mybytearray = new byte[(int) FILE_TO_SEND.length()];
-        try {
-            fis = new FileInputStream(FILE_TO_SEND);
-            bis = new BufferedInputStream(fis);
+  public static void main(String[] args) throws IOException, ClassNotFoundException,InterruptedException {
 
-        } catch (FileNotFoundException ex) {
-            //Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(ex);
-        }
+    ServerSocket servsock = new ServerSocket(4000);
+    // File file = new File("see you again.mp3");
+    // FileInputStream inputStream = new FileInputStream(file);
+    // byte[] mybytearray = inputStream.readAllBytes();
 
-        OutputStream os = null;
-        bis.read(mybytearray, 0, mybytearray.length);
-        os = socket.getOutputStream();
-        System.out.println("Sending " + FILE_TO_SEND + "(" + mybytearray.length + " bytes)");
-        os.write(mybytearray, 0, mybytearray.length);
-        os.flush();
-    }
+    
+    // while (true) {
+    //   Socket sock = servsock.accept();
+    //   System.out.println(sock.getInetAddress());
+    //   DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+    //   out.writeUTF(file.getName().toLowerCase());
+    //   out.write(mybytearray);
+    // }
+
+    Socket socket=null;
+    socket = servsock.accept();
+    OutputStream outputStream=socket.getOutputStream();
+    BufferedImage image=ImageIO.read(new File("C:/Users/miali/Pictures/Camera Roll/cute.jpg"));
+    ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+    ImageIO.write(image, "jpg",byteArrayOutputStream );
+    byte[]size =ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+    outputStream.write(size);
+    outputStream.write(byteArrayOutputStream.toByteArray());
+    outputStream.flush();
+    System.out.println("Sending image......");
+    System.out.println("Flushed"+System.currentTimeMillis());
+
+    Thread.sleep(120000);
+    System.out.println("Closing"+System.currentTimeMillis());
+    socket.close();
+
+
+
+  }
+    
 }
+

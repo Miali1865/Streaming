@@ -2,38 +2,68 @@ package client;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.io.IOException;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+import java.awt.*;
+import java.nio.ByteBuffer;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import player.*;
 
 public class Client {
+
+    private static DataOutputStream dataOutputStream = null;
+    private static DataInputStream dataInputStream = null;
+    public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException,UnsupportedAudioFileException, LineUnavailableException, JavaLayerException, ClassNotFoundException {
     
-    public void getClient() throws IOException {
-        Socket clientSocket = null;
-        clientSocket = new Socket("localhost",9000);
-        File file_to_save = new File("C:\\Users\\miali\\Music\\socket\\good.mp3");
-        int bytesRead;
-        int current = 0;
-        FileOutputStream fos = null;
-        BufferedOutputStream bos = null;
+        Socket clientSocket = new Socket("localhost",4000);
+        // DataInputStream data = new DataInputStream(clientSocket.getInputStream());
 
-        byte[] mybytearray = new byte[9429672];
-        InputStream is = clientSocket.getInputStream();
-        fos = new FileOutputStream(file_to_save);
-        bos = new BufferedOutputStream(fos);
-        bytesRead = is.read(mybytearray, 0, mybytearray.length);
-        current = bytesRead;
+        // int len = 1000000;
+        // byte[] mybytearray = new byte[len];
+        // String filename = data.readUTF();
+        // System.out.println(filename);
 
-        do {
-            bytesRead = is.read(mybytearray, current, (mybytearray.length - current));
-            if (bytesRead >= 0) {
-                current += bytesRead;
-                bos.write(mybytearray, 0, current);
-                bos.flush();
-                System.out.println("File tsew.mp3"+ " downloaded (" + current + " bytes read)");
-            }
-        } while (bytesRead > -1);
+        // while(true) {
+        //     data.read(mybytearray, 0, len);
+        //     System.out.println("en cours de lecture...");
+        //     Thread play = new Thread(new PlayMP3(mybytearray));
+        //     play.start();
+        //     play(mybytearray);
+        // }
 
-        // bos.write(mybytearray, 0, current);
-        // bos.flush();
-        // System.out.println("File tsew.mp3"+ " downloaded (" + current + " bytes read)");
+        InputStream inputStream=clientSocket.getInputStream();
+        System.out.println("Reading"+System.currentTimeMillis());
+        byte[] sizear=new byte[4];
+        inputStream.read(sizear);
+        int size=ByteBuffer.wrap(sizear).asIntBuffer().get();
+        byte[] imagear=new byte[size];
+        inputStream.read(imagear);
+        BufferedImage image=ImageIO.read(new ByteArrayInputStream(imagear));
+        ImageIcon imageIcon = new ImageIcon(image);
+        JFrame jFrame = new JFrame();
+        jFrame.setLayout(new FlowLayout());
+        jFrame.setSize(500,500);
+        JLabel jLabel = new JLabel();
+        jLabel.setIcon(imageIcon);
+        jFrame.add(jLabel);
+        jFrame.setVisible(true);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        System.out.println("image recu");
 
+    }
+
+    public static void play(byte[] data) throws UnsupportedAudioFileException, IOException, LineUnavailableException, JavaLayerException {
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
+        Player player = new Player(in);
+        player.play();
     }
 }
