@@ -17,6 +17,29 @@ public class Serveur {
   public static void main(String[] args) throws IOException, ClassNotFoundException,InterruptedException {
 
     ServerSocket servsock = new ServerSocket(4000);
+
+    //Socket socket = servsock.accept();
+
+    // DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+    // OutputStream outputStream=socket.getOutputStream();
+    // File file = new File("C:/Users/miali/Pictures/Camera Roll/cute.jpg");
+    // BufferedImage image=ImageIO.read(file);
+    // ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+    // ImageIO.write(image, "jpg",byteArrayOutputStream );
+    // byte[]size =ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+
+    // outputStream.write(size);
+    // outputStream.write(byteArrayOutputStream.toByteArray());
+    // out.writeUTF(file.getName().toLowerCase());
+    // outputStream.flush();
+    // System.out.println("Sending image......");
+    // System.out.println("Flushed "+System.currentTimeMillis());
+
+    // Thread.sleep(120000);
+    // System.out.println("Closing "+System.currentTimeMillis());
+    // socket.close();
+
+
     // File file = new File("see you again.mp3");
     // FileInputStream inputStream = new FileInputStream(file);
     // byte[] mybytearray = inputStream.readAllBytes();
@@ -30,24 +53,36 @@ public class Serveur {
     //   out.write(mybytearray);
     // }
 
-    Socket socket=null;
-    socket = servsock.accept();
-    OutputStream outputStream=socket.getOutputStream();
-    BufferedImage image=ImageIO.read(new File("C:/Users/miali/Pictures/Camera Roll/cute.jpg"));
-    ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-    ImageIO.write(image, "jpg",byteArrayOutputStream );
-    byte[]size =ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
-    outputStream.write(size);
-    outputStream.write(byteArrayOutputStream.toByteArray());
-    outputStream.flush();
-    System.out.println("Sending image......");
-    System.out.println("Flushed"+System.currentTimeMillis());
-
-    Thread.sleep(120000);
-    System.out.println("Closing"+System.currentTimeMillis());
-    socket.close();
+    try (servsock) {
+      Socket clientSocket = servsock.accept();
+      System.out.println("Connected");
+      dataInputStream = new DataInputStream(clientSocket.getInputStream());
+      dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
 
 
+      String path = "C:/Users/miali/Videos/MERCREDI/mercredi.mp4";
+      int bytes = 0;
+      File file = new File(path);
+      FileInputStream fileInputStream = new FileInputStream(file);
+
+
+      dataOutputStream.writeLong(file.length());
+
+
+      byte[] buffer = new byte[4 * 1024];
+      while ((bytes = fileInputStream.read(buffer)) != -1) {
+      
+      dataOutputStream.write(buffer, 0, bytes);
+      dataOutputStream.flush();
+      }
+      fileInputStream.close();
+      dataInputStream.close();
+      dataOutputStream.close();
+      clientSocket.close();
+  }
+  catch (Exception e) {
+      e.printStackTrace();
+  }
 
   }
     
