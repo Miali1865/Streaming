@@ -27,8 +27,8 @@ public class Serveur {
     File fichierMp3 = new File("see you again.mp3");
     out.writeUTF(fichierMp3.getName().toLowerCase());
 
-    String path = "C:/Users/miali/Videos/MERCREDI/mercredi.mp4";
-    File fichier = new File(path);
+    //String path = "C:/Users/miali/Videos/MERCREDI/mercredi.mp4";
+    File fichier = new File("C:/Users/miali/Videos/MERCREDI/mercredi.mp4");
     dataOutputStream = new DataOutputStream(socket.getOutputStream());
     dataOutputStream.writeUTF(fichier.getName().toLowerCase());
 
@@ -87,6 +87,8 @@ public class Serveur {
 
           int bytes = 0;
           FileInputStream fileInputStream = new FileInputStream(fichier);
+
+          dataOutputStream.writeLong(fichier.length());
 
           byte[] buffer = new byte[4 * 1024];
           while ((bytes = fileInputStream.read(buffer)) != -1) {
