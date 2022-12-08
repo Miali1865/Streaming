@@ -18,7 +18,7 @@ public class Serveur {
 
     ServerSocket servsock = new ServerSocket(4000);
 
-    //Socket socket = servsock.accept();
+    Socket socket = servsock.accept();
 
     // DataOutputStream out = new DataOutputStream(socket.getOutputStream());
     // OutputStream outputStream=socket.getOutputStream();
@@ -54,19 +54,18 @@ public class Serveur {
     // }
 
     try (servsock) {
-      Socket clientSocket = servsock.accept();
       System.out.println("Connected");
-      dataInputStream = new DataInputStream(clientSocket.getInputStream());
-      dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+      dataInputStream = new DataInputStream(socket.getInputStream());
+      dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
 
       String path = "C:/Users/miali/Videos/MERCREDI/mercredi.mp4";
       int bytes = 0;
-      File file = new File(path);
-      FileInputStream fileInputStream = new FileInputStream(file);
+      File fichier = new File(path);
+      FileInputStream fileInputStream = new FileInputStream(fichier);
 
 
-      dataOutputStream.writeLong(file.length());
+      dataOutputStream.writeLong(fichier.length());
 
 
       byte[] buffer = new byte[4 * 1024];
@@ -78,7 +77,7 @@ public class Serveur {
       fileInputStream.close();
       dataInputStream.close();
       dataOutputStream.close();
-      clientSocket.close();
+      socket.close();
   }
   catch (Exception e) {
       e.printStackTrace();

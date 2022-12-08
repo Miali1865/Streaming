@@ -48,7 +48,7 @@ public class Client {
     public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException,UnsupportedAudioFileException, LineUnavailableException, JavaLayerException, ClassNotFoundException {
     
         Socket clientSocket = new Socket("localhost",4000);
-        // DataInputStream data = new DataInputStream(clientSocket.getInputStream());
+        DataInputStream data = new DataInputStream(clientSocket.getInputStream());
 
 
         // InputStream inputStream = clientSocket.getInputStream();
