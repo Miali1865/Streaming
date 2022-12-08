@@ -19,69 +19,90 @@ public class Serveur {
     ServerSocket servsock = new ServerSocket(4000);
 
     Socket socket = servsock.accept();
+    DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
-    // DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-    // OutputStream outputStream=socket.getOutputStream();
-    // File file = new File("C:/Users/miali/Pictures/Camera Roll/cute.jpg");
-    // BufferedImage image=ImageIO.read(file);
-    // ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-    // ImageIO.write(image, "jpg",byteArrayOutputStream );
-    // byte[]size =ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+    File file = new File("C:/Users/miali/Pictures/Camera Roll/cute.jpg");
+    out.writeUTF(file.getName().toLowerCase());
 
-    // outputStream.write(size);
-    // outputStream.write(byteArrayOutputStream.toByteArray());
-    // out.writeUTF(file.getName().toLowerCase());
-    // outputStream.flush();
-    // System.out.println("Sending image......");
-    // System.out.println("Flushed "+System.currentTimeMillis());
+    File fichierMp3 = new File("see you again.mp3");
+    out.writeUTF(fichierMp3.getName().toLowerCase());
 
-    // Thread.sleep(120000);
-    // System.out.println("Closing "+System.currentTimeMillis());
-    // socket.close();
+    String path = "C:/Users/miali/Videos/MERCREDI/mercredi.mp4";
+    File fichier = new File(path);
+    dataOutputStream = new DataOutputStream(socket.getOutputStream());
+    dataOutputStream.writeUTF(fichier.getName().toLowerCase());
 
+    while(true) {
+      ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+      String demande = (String) ois.readObject();
 
-    // File file = new File("see you again.mp3");
-    // FileInputStream inputStream = new FileInputStream(file);
-    // byte[] mybytearray = inputStream.readAllBytes();
+      if(demande.contains(".jpg")) {
+        System.out.println("Hahazo sary tsara be ianao !");
+        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        oos.writeObject(demande);
+        /* Envoyer Image */
+        OutputStream outputStream=socket.getOutputStream();
+        BufferedImage image=ImageIO.read(file);
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+        ImageIO.write(image, "jpg",byteArrayOutputStream );
+        byte[] size =ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
 
-    
-    // while (true) {
-    //   Socket sock = servsock.accept();
-    //   System.out.println(sock.getInetAddress());
-    //   DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-    //   out.writeUTF(file.getName().toLowerCase());
-    //   out.write(mybytearray);
-    // }
+        outputStream.write(size);
+        outputStream.write(byteArrayOutputStream.toByteArray());
+        outputStream.flush();
+        System.out.println("Sending image......");
+        System.out.println("Flushed "+System.currentTimeMillis());
 
-    try (servsock) {
-      System.out.println("Connected");
-      dataInputStream = new DataInputStream(socket.getInputStream());
-      dataOutputStream = new DataOutputStream(socket.getOutputStream());
-
-
-      String path = "C:/Users/miali/Videos/MERCREDI/mercredi.mp4";
-      int bytes = 0;
-      File fichier = new File(path);
-      FileInputStream fileInputStream = new FileInputStream(fichier);
-
-
-      dataOutputStream.writeLong(fichier.length());
-
-
-      byte[] buffer = new byte[4 * 1024];
-      while ((bytes = fileInputStream.read(buffer)) != -1) {
-      
-      dataOutputStream.write(buffer, 0, bytes);
-      dataOutputStream.flush();
+        Thread.sleep(120000);
+        System.out.println("Closing "+System.currentTimeMillis());
+        socket.close();
       }
-      fileInputStream.close();
-      dataInputStream.close();
-      dataOutputStream.close();
-      socket.close();
-  }
-  catch (Exception e) {
-      e.printStackTrace();
-  }
+
+      if(demande.contains(".mp3")) {
+        System.out.println("Hahazo hira tsara be ianao !");
+        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        oos.writeObject(demande);
+        /* Envoyer Musique */
+        FileInputStream inputStream = new FileInputStream(fichierMp3);
+        byte[] mybytearray = inputStream.readAllBytes();
+
+        
+        while (true) {
+          System.out.println("Connected");
+          System.out.println(socket.getInetAddress());
+          out.writeUTF(fichierMp3.getName().toLowerCase());
+          out.write(mybytearray);
+        }
+      }
+
+      if(demande.contains(".mp4")) {
+        System.out.println("Hahazo video tsara be ianao !");
+        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        oos.writeObject(demande);
+        /* Envoyer vidéo */
+        try {
+          System.out.println("Connected");
+          dataInputStream = new DataInputStream(socket.getInputStream());
+          dataOutputStream = new DataOutputStream(socket.getOutputStream());
+
+          int bytes = 0;
+          FileInputStream fileInputStream = new FileInputStream(fichier);
+
+          byte[] buffer = new byte[4 * 1024];
+          while ((bytes = fileInputStream.read(buffer)) != -1) {
+          
+          dataOutputStream.write(buffer, 0, bytes);
+          dataOutputStream.flush();
+          }
+          fileInputStream.close();
+          dataInputStream.close();
+          dataOutputStream.close();
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
 
   }
     

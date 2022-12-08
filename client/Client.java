@@ -3,7 +3,7 @@ package client;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.io.IOException;
+
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javazoom.jl.decoder.JavaLayerException;
@@ -13,11 +13,10 @@ import java.nio.ByteBuffer;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.*;
@@ -36,6 +35,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.*;
 import java.lang.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import player.*;
 
@@ -50,87 +51,160 @@ public class Client {
         Socket clientSocket = new Socket("localhost",4000);
         DataInputStream data = new DataInputStream(clientSocket.getInputStream());
 
+        String filename = data.readUTF();
+        String fichierName = data.readUTF();
+        String fichierVideo = data.readUTF();
 
-        // InputStream inputStream = clientSocket.getInputStream();
-        // System.out.println("Reading "+System.currentTimeMillis());
-        // byte[] sizear=new byte[4];
-        // inputStream.read(sizear);
+        JLabel label = new JLabel();
+        label.setText("Que voulez vous lire?");
+
+        JButton button1 = new JButton();
+        button1.setText(filename);
+        button1.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e)
+            {
+                try {
+                    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                    oos.writeObject(e.getActionCommand());
+                    System.out.println("You clicked "+e.getActionCommand());
+                } catch (Exception exp) {
+                    exp.printStackTrace();
+                }
+            }
+        });  
         
-        // int size=ByteBuffer.wrap(sizear).asIntBuffer().get();
-        // byte[] imagear=new byte[size];
-        // inputStream.read(imagear);
-        // BufferedImage image=ImageIO.read(new ByteArrayInputStream(imagear));
-        // ImageIcon imageIcon = new ImageIcon(image);
 
-        // String filename = data.readUTF();
-        // System.out.println("image recu "+filename);
+        JButton button2 = new JButton();
+        button2.setText(fichierName);
+        button2.addActionListener(new ActionListener() {
 
-        // JFrame jFrame = new JFrame();
-        // jFrame.setLayout(new FlowLayout());
-        // jFrame.setSize(500,500);
-        // JLabel jLabel = new JLabel();
-        // jLabel.setIcon(imageIcon);
-        // jFrame.add(jLabel);
-        // jFrame.setVisible(true);
-        // jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            public void actionPerformed(ActionEvent e)
+            {
+                try {
+                    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                    oos.writeObject(e.getActionCommand());
+                    System.out.println("You clicked "+e.getActionCommand());
+                } catch (Exception exp) {
+                    exp.printStackTrace();
+                }
+            }
+        }); 
+
+        JButton button3 = new JButton();
+        button3.setText(fichierVideo);
+        button3.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e)
+            {
+                try {
+                    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                    oos.writeObject(e.getActionCommand());
+                    System.out.println("You clicked "+e.getActionCommand());
+                } catch (Exception exp) {
+                    exp.printStackTrace();
+                }
+            }
+        }); 
 
 
-        // int len = 1000000;
-        // byte[] mybytearray = new byte[len];
-        // String filename = data.readUTF();
-        // System.out.println(filename);
+        JFrame frame = new JFrame();
+        frame.setLayout(new FlowLayout());
+        frame.setSize(500,500);
+        frame.add(label);
+        frame.add(button1);
+        frame.add(button2);
+        frame.add(button3);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // JFrame frame = new JFrame();
-        // frame.setLayout(new FlowLayout());
-        // frame.setSize(500,500);
-        // JLabel label = new JLabel();
-        // label.setText(filename);
-        // frame.add(label);
-        // frame.setVisible(true);
-        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+        String envoye = (String) ois.readObject();
 
-        // while(true) {
-        //     data.read(mybytearray, 0, len);
-        //     System.out.println("en cours de lecture...");
-        //     Thread play = new Thread(new PlayMP3(mybytearray));
-        //     play.start();
-        //     play(mybytearray);
-        // }
-
-        try (clientSocket) {
+        if(envoye.contains(".jpg")) {
+            System.out.println("Ny sary tsara be hazonao "+envoye);
+            /* Affichage Image */
+            InputStream inputStream = clientSocket.getInputStream();
+            System.out.println("Reading "+System.currentTimeMillis());
+            byte[] sizear=new byte[4];
+            inputStream.read(sizear);
             
-            dataInputStream = new DataInputStream(clientSocket.getInputStream());
-            dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-            System.out.println("Sending the File to the Server");
+            int size=ByteBuffer.wrap(sizear).asIntBuffer().get();
+            byte[] imagear=new byte[size];
+            inputStream.read(imagear);
+            BufferedImage image=ImageIO.read(new ByteArrayInputStream(imagear));
+            ImageIcon imageIcon = new ImageIcon(image);
 
+            JFrame jFrame = new JFrame();
+            jFrame.setLayout(new FlowLayout());
+            jFrame.setSize(500,500);
+            JLabel jLabel = new JLabel();
+            jLabel.setIcon(imageIcon);
+            jFrame.add(jLabel);
+            jFrame.setVisible(true);
+            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
 
-            String fileName = "mercredi.mp4";
-            int bytes = 0;
-            FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-     
-            long size = dataInputStream.readLong(); // read file size
-            byte[] buffer = new byte[4 * 1024];
-            while (size > 0 && (bytes = dataInputStream.read( buffer, 0, (int)Math.min(buffer.length, size))) != -1) {
-                // Here we write the file using write method
-                fileOutputStream.write(buffer, 0, bytes);
-                size -= bytes; // read upto file size
+        if(envoye.contains(".mp3")) {
+            System.out.println("Ny hira tsara be hazonao "+envoye);
+            /* Envoyer photos */
+            int len = 1000000;
+            byte[] mybytearray = new byte[len];
+
+            JFrame frame1 = new JFrame();
+            frame1.setLayout(new FlowLayout());
+            frame1.setSize(500,500);
+            JLabel label1 = new JLabel();
+            label1.setText(fichierName);
+            frame1.add(label1);
+            frame1.setVisible(true);
+            frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            while(true) {
+                data.read(mybytearray, 0, len);
+                System.out.println("en cours de lecture...");
+                Thread play = new Thread(new PlayMP3(mybytearray));
+                play.start();
+                play(mybytearray);
             }
-            // Here we received file
-            System.out.println("File is Received");
-            fileOutputStream.close();
-            //receiveFile("mercredi.mp4");
-            dataInputStream.close();
-            dataInputStream.close();
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Client(args);
+
+        if(envoye.contains(".mp4")) {
+            System.out.println("Ny video tsara be hazonao "+envoye);
+            /* Envoyer vidéo */
+            try {
+                
+                dataInputStream = new DataInputStream(clientSocket.getInputStream());
+                dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+                System.out.println("Sending the File to the Server");
+
+                String fileName = "mercredi.mp4";
+                int bytes = 0;
+                FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+        
+                long taille = dataInputStream.readLong(); // read file taille
+                byte[] buffer = new byte[4 * 1024];
+                while (taille > 0 && (bytes = dataInputStream.read( buffer, 0, (int)Math.min(buffer.length, taille))) != -1) {
+                    // Here we write the file using write method
+                    fileOutputStream.write(buffer, 0, bytes);
+                    taille -= bytes; // read upto file taille
+                }
+                // Here we received file
+                System.out.println("File is Received");
+                fileOutputStream.close();
+                dataInputStream.close();
+                dataInputStream.close();
             }
-        });
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new Client(args);
+                }
+            });
+        }
 
     }
 
