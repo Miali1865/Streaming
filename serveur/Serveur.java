@@ -14,6 +14,7 @@ public class Serveur {
   private static DataInputStream dataInputStream = null;
   private static Socket s=null;
 
+  
   public static void main(String[] args) throws IOException, ClassNotFoundException,InterruptedException {
 
     ServerSocket servsock = new ServerSocket(4000);
@@ -27,7 +28,6 @@ public class Serveur {
     File fichierMp3 = new File("see you again.mp3");
     out.writeUTF(fichierMp3.getName().toLowerCase());
 
-    //String path = "C:/Users/miali/Videos/MERCREDI/mercredi.mp4";
     File fichier = new File("C:/Users/miali/Videos/MERCREDI/mercredi.mp4");
     dataOutputStream = new DataOutputStream(socket.getOutputStream());
     dataOutputStream.writeUTF(fichier.getName().toLowerCase());
@@ -35,11 +35,14 @@ public class Serveur {
     while(true) {
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
       String demande = (String) ois.readObject();
+      System.out.println("Ito ilay demande "+demande);
+      
 
       if(demande.contains(".jpg")) {
         System.out.println("Hahazo sary tsara be ianao !");
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(demande);
+
         /* Envoyer Image */
         OutputStream outputStream=socket.getOutputStream();
         BufferedImage image=ImageIO.read(file);
@@ -52,16 +55,13 @@ public class Serveur {
         outputStream.flush();
         System.out.println("Sending image......");
         System.out.println("Flushed "+System.currentTimeMillis());
-
-        Thread.sleep(120000);
-        System.out.println("Closing "+System.currentTimeMillis());
-        socket.close();
       }
 
       if(demande.contains(".mp3")) {
         System.out.println("Hahazo hira tsara be ianao !");
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(demande);
+
         /* Envoyer Musique */
         FileInputStream inputStream = new FileInputStream(fichierMp3);
         byte[] mybytearray = inputStream.readAllBytes();
@@ -79,6 +79,7 @@ public class Serveur {
         System.out.println("Hahazo video tsara be ianao !");
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(demande);
+        
         /* Envoyer vidéo */
         try {
           System.out.println("Connected");

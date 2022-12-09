@@ -3,7 +3,6 @@ package client;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javazoom.jl.decoder.JavaLayerException;
@@ -16,7 +15,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.*;
@@ -50,6 +48,8 @@ public class Client {
     
         Socket clientSocket = new Socket("localhost",4000);
         DataInputStream data = new DataInputStream(clientSocket.getInputStream());
+        ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+
 
         String filename = data.readUTF();
         String fichierName = data.readUTF();
@@ -65,8 +65,9 @@ public class Client {
             public void actionPerformed(ActionEvent e)
             {
                 try {
-                    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                    // ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
                     oos.writeObject(e.getActionCommand());
+                    oos.flush();
                     System.out.println("You clicked "+e.getActionCommand());
                 } catch (Exception exp) {
                     exp.printStackTrace();
@@ -82,8 +83,9 @@ public class Client {
             public void actionPerformed(ActionEvent e)
             {
                 try {
-                    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                    // ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
                     oos.writeObject(e.getActionCommand());
+                    oos.flush();
                     System.out.println("You clicked "+e.getActionCommand());
                 } catch (Exception exp) {
                     exp.printStackTrace();
@@ -98,7 +100,7 @@ public class Client {
             public void actionPerformed(ActionEvent e)
             {
                 try {
-                    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                    // ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
                     oos.writeObject(e.getActionCommand());
                     System.out.println("You clicked "+e.getActionCommand());
                 } catch (Exception exp) {
@@ -142,11 +144,12 @@ public class Client {
             jLabel.setIcon(imageIcon);
             jFrame.add(jLabel);
             jFrame.setVisible(true);
-            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
 
         if(envoye.contains(".mp3")) {
             System.out.println("Ny hira tsara be hazonao "+envoye);
+            
             /* Envoyer photos */
             int len = 1000000;
             byte[] mybytearray = new byte[len];
@@ -158,7 +161,7 @@ public class Client {
             label1.setText(fichierName);
             frame1.add(label1);
             frame1.setVisible(true);
-            frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame1.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
             while(true) {
                 data.read(mybytearray, 0, len);
@@ -215,7 +218,7 @@ public class Client {
         frame.setContentPane(component);
         frame.setLocation(100, 100);
         frame.setSize(1050, 600);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.setVisible(true);
 
         Canvas c = new Canvas();
