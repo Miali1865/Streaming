@@ -22,13 +22,13 @@ public class Serveur {
         Socket socket = servsock.accept();
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
     
-        File file = new File("C:/Users/miali/Pictures/Camera Roll/cute.jpg");
+        File file = new File("C:/Users/miali/Pictures/Camera Roll/text.jpg");
         out.writeUTF(file.getName().toLowerCase());
     
         File fichierMp3 = new File("see you again.mp3");
         out.writeUTF(fichierMp3.getName().toLowerCase());
     
-        File fichier = new File("C:/Users/miali/Videos/us/us.mp4");
+        File fichier = new File("C:/Users/miali/Videos/MERCREDI/dancing.mp4");
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(fichier.getName().toLowerCase());
   
