@@ -28,7 +28,7 @@ public class Serveur {
     File fichierMp3 = new File("see you again.mp3");
     out.writeUTF(fichierMp3.getName().toLowerCase());
 
-    File fichier = new File("C:/Users/miali/Videos/MERCREDI/mercredi.mp4");
+    File fichier = new File("C:/Users/miali/Videos/us/us.mp4");
     dataOutputStream = new DataOutputStream(socket.getOutputStream());
     dataOutputStream.writeUTF(fichier.getName().toLowerCase());
 
