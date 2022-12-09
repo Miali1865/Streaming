@@ -39,22 +39,22 @@ public class Serveur {
             
     
             if(demande.contains(".jpg")) {
-            System.out.println("Hahazo sary tsara be ianao !");
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(demande);
-    
-            /* Envoyer Image */
-            OutputStream outputStream=socket.getOutputStream();
-            BufferedImage image=ImageIO.read(file);
-            ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-            ImageIO.write(image, "jpg",byteArrayOutputStream );
-            byte[] size =ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
-    
-            outputStream.write(size);
-            outputStream.write(byteArrayOutputStream.toByteArray());
-            outputStream.flush();
-            System.out.println("Sending image......");
-            System.out.println("Flushed "+System.currentTimeMillis());
+                System.out.println("Hahazo sary tsara be ianao !");
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                oos.writeObject(demande);
+        
+                /* Envoyer Image */
+                OutputStream outputStream=socket.getOutputStream();
+                BufferedImage image=ImageIO.read(file);
+                ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                ImageIO.write(image, "jpg",byteArrayOutputStream );
+                byte[] size =ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+        
+                outputStream.write(size);
+                outputStream.write(byteArrayOutputStream.toByteArray());
+                outputStream.flush();
+                System.out.println("Sending image......");
+                System.out.println("Flushed "+System.currentTimeMillis());
             }
   
         if(demande.contains(".mp3")) {
