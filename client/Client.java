@@ -181,7 +181,7 @@ public class Client {
                 dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
                 System.out.println("Sending the File to the Server");
 
-                String fileName = "mercredi.mp4";
+                String fileName = "dancing.mp4";
                 int bytes = 0;
                 FileOutputStream fileOutputStream = new FileOutputStream(fileName);
         
@@ -227,7 +227,7 @@ public class Client {
         p.setLayout(new BorderLayout());
         p.add(c,BorderLayout.CENTER);
         frame.add(p,BorderLayout.CENTER);
-        component.mediaPlayer().media().play("mercredi.mp4");
+        component.mediaPlayer().media().play("dancing.mp4");
 
     }
 

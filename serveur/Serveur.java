@@ -25,7 +25,7 @@ public class Serveur {
         File file = new File("C:/Users/miali/Pictures/Camera Roll/text.jpg");
         out.writeUTF(file.getName().toLowerCase());
     
-        File fichierMp3 = new File("see you again.mp3");
+        File fichierMp3 = new File("C:/Users/miali/Music/hira/see you again.mp3");
         out.writeUTF(fichierMp3.getName().toLowerCase());
     
         File fichier = new File("C:/Users/miali/Videos/MERCREDI/dancing.mp4");
